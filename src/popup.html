@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN" class="md-scroll-root">
+  <head>
+    <meta charset="utf-8" />
+    <title>dsh 任务状态通知</title>
+    <link rel="stylesheet" href="./md3-palette.css" />
+    <link rel="stylesheet" href="./md3.css" />
+    <style>
+      /* 弹窗专属排版：MD3 在窄容器里用 16dp 边距 + 卡片间距 12dp */
+      body { width: 344px; }
+      main { padding: 0 16px 16px; display: grid; gap: 12px; }
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 10px;
+        color: var(--md-sys-color-on-surface-variant);
+      }
+      #sessions { max-height: 208px; }
+      #sessions .md-list-item { padding: 6px 8px; }
+      .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+      #diag { max-height: 168px; }
+      .switches { display: grid; gap: 2px; }
+      .note { margin-top: 6px; }
+      .note--warn { color: var(--md-sys-color-error); }
+      .switches .md-switch { padding: 4px 0; align-items: center; }
+    </style>
+  </head>
+  <body>
+    <header class="md-top-app-bar">
+      <span class="md-top-app-bar__leading" aria-hidden="true">
+        <svg class="md-icon md-icon--20" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-5v-6a7 7 0 0 0-5.25-6.78V3.5a1.75 1.75 0 1 0-3.5 0v.72A7 7 0 0 0 5 11v6l-1.5 1.5v.5h17v-.5Z"
+          />
+        </svg>
+      </span>
+      <div class="md-top-app-bar__text">
+        <h1 class="md-top-app-bar__title">任务状态通知</h1>
+        <div id="pageStatus" class="md-top-app-bar__subtitle">读取中…</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="md-card md-card--outlined" aria-labelledby="sessionsTitle">
+        <div class="md-card__header">
+          <svg class="md-icon md-icon--20" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M3 5h18v2H3V5Zm0 6h18v2H3v-2Zm0 6h12v2H3v-2Z" />
+          </svg>
+          <span id="sessionsTitle" class="md-card__title">会话</span>
+        </div>
+        <ul id="sessions" class="md-list md-scroll" aria-live="polite">
+          <li class="md-list-item">
+            <span class="md-list-item__text md-muted md-body-small">（还没有收到页面数据）</span>
+          </li>
+        </ul>
+      </section>
+
+      <section class="md-card md-card--outlined">
+        <div class="actions">
+          <button id="open" class="md-button md-button--filled" type="button">
+            <svg class="md-icon md-icon--18" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7ZM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7Z" />
+            </svg>
+            打开 dsh
+          </button>
+          <button id="test" class="md-button md-button--tonal" type="button">测试通知</button>
+          <button id="diagnose" class="md-button md-button--outlined" type="button">诊断当前页面</button>
+        </div>
+      </section>
+
+      <section class="md-card md-card--outlined" aria-labelledby="notifyTitle">
+        <div class="md-card__header">
+          <svg class="md-icon md-icon--20" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-5v-6a7 7 0 0 0-5.25-6.78V3.5a1.75 1.75 0 1 0-3.5 0v.72A7 7 0 0 0 5 11v6l-1.5 1.5v.5h17v-.5Z" />
+          </svg>
+          <span id="notifyTitle" class="md-card__title">通知时机</span>
+        </div>
+        <div class="switches">
+          <label class="md-switch">
+            <input id="notifyComplete" type="checkbox" />
+            <span class="md-switch__text"><span class="md-switch__label">完成时通知</span></span>
+          </label>
+          <label class="md-switch">
+            <input id="notifyNeedsInput" type="checkbox" />
+            <span class="md-switch__text"><span class="md-switch__label">等待授权 / 回答时通知</span></span>
+          </label>
+          <label class="md-switch">
+            <input id="notifyError" type="checkbox" />
+            <span class="md-switch__text"><span class="md-switch__label">出错时通知</span></span>
+          </label>
+          <label class="md-switch">
+            <input id="notifyStart" type="checkbox" />
+            <span class="md-switch__text"><span class="md-switch__label">开始时通知</span></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="md-card md-card--outlined" aria-labelledby="appearanceTitle">
+        <div class="md-card__header">
+          <svg class="md-icon md-icon--20" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 3a9 9 0 0 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16a5 5 0 0 0 5-5c0-4.42-4.03-8-9-8Zm-5.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z" />
+          </svg>
+          <span id="appearanceTitle" class="md-card__title">外观</span>
+        </div>
+        <div class="md-segmented" role="radiogroup" aria-label="明暗模式">
+          <label>
+            <input type="radio" name="themeMode" value="auto" />
+            <span>跟随系统</span>
+          </label>
+          <label>
+            <input type="radio" name="themeMode" value="light" />
+            <span>浅色</span>
+          </label>
+          <label>
+            <input type="radio" name="themeMode" value="dark" />
+            <span>深色</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="md-card md-card--outlined" aria-labelledby="snapshotTitle">
+        <div class="md-card__header">
+          <svg class="md-icon md-icon--20" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M13 3a9 9 0 1 0 5.12 16.4l3.24 3.24 1.41-1.41-3.24-3.24A9 9 0 0 0 13 3Zm0 2a7 7 0 1 1 0 14 7 7 0 0 1 0-14Z" />
+          </svg>
+          <span id="snapshotTitle" class="md-card__title">最近一次页面快照</span>
+        </div>
+        <div id="snapshot" class="md-body-small md-muted">（还没有收到页面数据）</div>
+        <div id="sourcesNote" class="md-body-small md-muted" hidden style="margin-top: 6px"></div>
+        <div id="focusNote" class="md-body-small md-muted note" hidden></div>
+        <div id="notifyIssue" class="md-body-small note note--warn" hidden></div>
+      </section>
+
+      <section id="diagSection" class="md-card md-card--outlined" hidden aria-labelledby="diagTitle">
+        <div class="md-card__header">
+          <svg class="md-icon md-icon--20" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4Zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4Z" />
+          </svg>
+          <span id="diagTitle" class="md-card__title">页面诊断</span>
+        </div>
+        <pre id="diag" class="md-pre md-scroll"></pre>
+        <div class="actions" style="margin-top: 12px">
+          <button id="copyDiag" class="md-button md-button--tonal" type="button">复制诊断信息</button>
+        </div>
+      </section>
+
+      <div class="actions" style="justify-content: center">
+        <button id="options" class="md-button md-button--text" type="button">
+          <svg class="md-icon md-icon--18" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M19.14 12.94a7.07 7.07 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7 7 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.15 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.07 7.07 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.25.42.5.42h3.84c.25 0 .46-.18.5-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2Z" />
+          </svg>
+          设置
+        </button>
+      </div>
+    </main>
+
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>

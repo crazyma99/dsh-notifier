@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "dsh 任务状态通知",
+  "version": "0.1.0",
+  "description": "监听 dsh Web GUI（默认 http://127.0.0.1:3080）的会话状态，在任务开始/完成/等待授权时发出系统通知。适配 Windows / Linux / macOS。",
+  "minimum_chrome_version": "111",
+  "permissions": [
+    "notifications",
+    "storage",
+    "scripting"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "dsh 任务状态通知",
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "src/options.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>dsh 任务状态通知 · 设置</title>
+    <link rel="stylesheet" href="./md3-palette.css" />
+    <link rel="stylesheet" href="./md3.css" />
+    <style>
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 20px 96px;
+        display: grid;
+        gap: 16px;
+      }
+      .section-grid { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+      @media (max-width: 560px) { .section-grid { grid-template-columns: 1fr; } }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+      .switches { display: grid; gap: 4px; }
+      .seed-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+      input[type="color"] {
+        width: 56px;
+        height: 56px;
+        padding: 4px;
+        border: 1px solid var(--md-sys-color-outline);
+        border-radius: var(--md-sys-shape-md);
+        background: var(--md-sys-color-surface-container-highest);
+        cursor: pointer;
+      }
+      .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+      .swatch {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--md-sys-shape-full);
+        border: 1px solid var(--md-sys-color-outline-variant);
+        cursor: pointer;
+        position: relative;
+        padding: 0;
+      }
+      .swatch[aria-pressed="true"] {
+        outline: 2px solid var(--md-sys-color-primary);
+        outline-offset: 2px;
+      }
+      #status:empty { display: none; }
+      #status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: var(--md-sys-shape-full);
+        background: var(--md-sys-color-secondary-container);
+        color: var(--md-sys-color-on-secondary-container);
+        font: var(--md-sys-typescale-body-small);
+      }
+      #status[data-kind="err"] {
+        background: var(--md-sys-color-error-container);
+        color: var(--md-sys-color-on-error-container);
+      }
+      #snapshot { max-height: 220px; }
+      details summary {
+        cursor: pointer;
+        color: var(--md-sys-color-primary);
+        font: var(--md-sys-typescale-label-large);
+        list-style: none;
+      }
+      details summary::-webkit-details-marker { display: none; }
+      details[open] summary { margin-bottom: 16px; }
+    </style>
+  </head>
+  <body>
+    <header class="md-top-app-bar">
+      <span class="md-top-app-bar__leading" aria-hidden="true">
+        <svg class="md-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-5v-6a7 7 0 0 0-5.25-6.78V3.5a1.75 1.75 0 1 0-3.5 0v.72A7 7 0 0 0 5 11v6l-1.5 1.5v.5h17v-.5Z"
+          />
+        </svg>
+      </span>
+      <div class="md-top-app-bar__text">
+        <h1 class="md-top-app-bar__title">任务状态通知</h1>
+        <div class="md-top-app-bar__subtitle">
+          监听 dsh Web GUI 的会话状态，任务开始 / 完成 / 等待授权时提醒你
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="md-card md-card--outlined" aria-labelledby="appearanceTitle">
+        <div class="md-card__header">
+          <span id="appearanceTitle" class="md-card__title">外观 · Material You 动态配色</span>
+        </div>
+        <div class="md-card__body">
+          <div class="seed-row">
+            <input id="seedColor" type="color" aria-label="种子色" />
+            <div>
+              <div class="md-body-medium">种子色</div>
+              <div class="md-body-small md-muted" id="seedValue">整套配色都由它推导</div>
+            </div>
+            <div class="swatches" id="seedPresets" role="group" aria-label="预设种子色"></div>
+          </div>
+
+          <div class="md-segmented" role="radiogroup" aria-label="明暗模式">
+            <label>
+              <input type="radio" name="themeMode" value="auto" />
+              <span>跟随系统</span>
+            </label>
+            <label>
+              <input type="radio" name="themeMode" value="light" />
+              <span>浅色</span>
+            </label>
+            <label>
+              <input type="radio" name="themeMode" value="dark" />
+              <span>深色</span>
+            </label>
+          </div>
+          <div class="md-body-small md-muted">
+            配色由种子色按 Material 3 的色调板推导（tone 40 / 90 / 10 … 的角色映射），深浅两套自动对应，无需手工调色。
+          </div>
+        </div>
+      </section>
+
+      <section class="md-card md-card--outlined" aria-labelledby="watchTitle">
+        <div class="md-card__header">
+          <span id="watchTitle" class="md-card__title">监控地址</span>
+        </div>
+        <div class="md-card__body">
+          <label class="md-field">
+            <input id="baseUrl" class="md-field__input" type="text" spellcheck="false" placeholder=" " />
+            <span class="md-field__label">dsh URL</span>
+          </label>
+          <div class="md-body-small md-muted">
+            默认 http://127.0.0.1:3080。WSL 里跑 dsh、浏览器在 Windows 上通常保持默认即可（WSL2 有 localhost 转发）。
+            地址需与实际打开的 origin 完全一致：<code>127.0.0.1</code> 与 <code>localhost</code> 是两个来源。
+          </div>
+          <div class="actions">
+            <button id="save" class="md-button md-button--filled" type="button">保存并启用监听</button>
+            <button id="reloadTabs" class="md-button md-button--outlined" type="button">重载 dsh 标签页</button>
+            <button id="test" class="md-button md-button--tonal" type="button">发送测试通知</button>
+          </div>
+          <div id="status" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="md-card md-card--outlined" aria-labelledby="timingTitle">
+        <div class="md-card__header">
+          <span id="timingTitle" class="md-card__title">通知时机</span>
+        </div>
+        <div class="md-card__body">
+          <div class="switches">
+            <label class="md-switch">
+              <input id="notifyComplete" type="checkbox" />
+              <span class="md-switch__text">
+                <span class="md-switch__label">任务完成 / 结束运行时通知</span>
+              </span>
+            </label>
+            <label class="md-switch">
+              <input id="notifyNeedsInput" type="checkbox" />
+              <span class="md-switch__text">
+                <span class="md-switch__label">等待你的授权或回答时通知</span>
+              </span>
+            </label>
+            <label class="md-switch">
+              <input id="notifyError" type="checkbox" />
+              <span class="md-switch__text">
+                <span class="md-switch__label">出错或需要关注时通知</span>
+              </span>
+            </label>
+            <label class="md-switch">
+              <input id="notifyStart" type="checkbox" />
+              <span class="md-switch__text">
+                <span class="md-switch__label">任务开始运行时通知</span>
+                <span class="md-switch__supporting">默认关闭，避免噪音</span>
+              </span>
+            </label>
+            <label class="md-switch">
+              <input id="notifyWhenFocused" type="checkbox" />
+              <span class="md-switch__text">
+                <span class="md-switch__label">即使我正在看 dsh 页面也通知</span>
+                <span class="md-switch__supporting">默认只在你没盯着它时通知</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="section-grid">
+            <label class="md-field">
+              <input id="cooldownMs" class="md-field__input" type="number" min="0" step="1000" placeholder=" " />
+              <span class="md-field__label">同类事件静默间隔（毫秒）</span>
+            </label>
+            <label class="md-field">
+              <input id="pollMs" class="md-field__input" type="number" min="500" step="500" placeholder=" " />
+              <span class="md-field__label">页面轮询间隔（毫秒）</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="md-card md-card--outlined" aria-labelledby="debugTitle">
+        <div class="md-card__header">
+          <span id="debugTitle" class="md-card__title">调试</span>
+        </div>
+        <div class="md-card__body">
+          <label class="md-switch">
+            <input id="debug" type="checkbox" />
+            <span class="md-switch__text">
+              <span class="md-switch__label">在 dsh 页面右下角显示采集浮层</span>
+              <span class="md-switch__supporting">用来确认状态是否被正确识别</span>
+            </span>
+          </label>
+          <div>
+            <div class="md-body-small md-muted" style="margin-bottom: 6px">当前识别到的快照</div>
+            <pre id="snapshot" class="md-pre md-scroll">（还没有收到页面数据）</pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="md-card md-card--outlined">
+        <details>
+          <summary>高级：识别规则（dsh 前端改版时可在此微调）</summary>
+          <div class="md-card__body">
+            <label class="md-field">
+              <input id="sessionRowSelector" class="md-field__input" type="text" spellcheck="false" placeholder=" " />
+              <span class="md-field__label">会话行选择器</span>
+              <span class="md-field__supporting">
+                默认 <code>[data-row-key^="session:"]</code>，由会话 id 生成，最稳。识别不到时先点弹窗里的「诊断当前页面」。
+              </span>
+            </label>
+            <label class="md-field">
+              <input id="sessionLabels" class="md-field__input" type="text" spellcheck="false" placeholder=" " />
+              <span class="md-field__label">状态文案（逗号分隔）</span>
+            </label>
+            <label class="md-field">
+              <textarea id="attentionApprovalTexts" class="md-field__input md-scroll" spellcheck="false" placeholder=" "></textarea>
+              <span class="md-field__label">授权提示关键词（逗号分隔）</span>
+            </label>
+            <label class="md-field">
+              <textarea id="attentionQuestionTexts" class="md-field__input md-scroll" spellcheck="false" placeholder=" "></textarea>
+              <span class="md-field__label">提问提示关键词（逗号分隔）</span>
+            </label>
+          </div>
+        </details>
+      </section>
+    </main>
+
+    <script type="module" src="./options.js"></script>
+  </body>
+</html>

@@ -1,0 +1,667 @@
+/**
+ * Material Design 3（Material You）组件样式。
+ *
+ * 颜色来自 md3-palette.css / md3-tokens.js 生成的 --md-sys-color-* 变量；
+ * 这里只定义"与颜色无关"的部分：字阶、形状、层次、动效、状态层。
+ *
+ * 对照的是 MD3 的 token：字体 typescale、shape scale、elevation level、
+ * state layer 透明度（hover 8% / focus 10% / pressed 10%）、
+ * 动效（emphasized / standard 缓动，short/medium/long 时长）。
+ */
+
+:root {
+  /* ---- 形状 shape scale ---- */
+  --md-sys-shape-xs: 4px;
+  --md-sys-shape-sm: 8px;
+  --md-sys-shape-md: 12px;
+  --md-sys-shape-lg: 16px;
+  --md-sys-shape-xl: 28px;
+  --md-sys-shape-full: 999px;
+
+  /* ---- 动效 motion ---- */
+  --md-sys-motion-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --md-sys-motion-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --md-sys-motion-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-duration-short: 150ms;
+  --md-sys-motion-duration-medium: 300ms;
+  --md-sys-motion-duration-long: 450ms;
+
+  /* ---- 状态层 state layer ---- */
+  --md-sys-state-hover: 0.08;
+  --md-sys-state-focus: 0.1;
+  --md-sys-state-pressed: 0.1;
+
+  /* ---- 层次 elevation（MD3 的双层阴影） ---- */
+  --md-sys-elevation-1: 0 1px 2px 0 rgb(0 0 0 / 30%), 0 1px 3px 1px rgb(0 0 0 / 15%);
+  --md-sys-elevation-2: 0 1px 2px 0 rgb(0 0 0 / 30%), 0 2px 6px 2px rgb(0 0 0 / 15%);
+  --md-sys-elevation-3: 0 4px 8px 3px rgb(0 0 0 / 15%), 0 1px 3px 0 rgb(0 0 0 / 30%);
+
+  /* ---- 字阶 typescale ---- */
+  --md-sys-typescale-headline-small: 500 24px/32px var(--md-sys-font);
+  --md-sys-typescale-title-large: 400 22px/28px var(--md-sys-font);
+  --md-sys-typescale-title-medium: 500 16px/24px var(--md-sys-font);
+  --md-sys-typescale-title-small: 500 14px/20px var(--md-sys-font);
+  --md-sys-typescale-body-large: 400 16px/24px var(--md-sys-font);
+  --md-sys-typescale-body-medium: 400 14px/20px var(--md-sys-font);
+  --md-sys-typescale-body-small: 400 12px/16px var(--md-sys-font);
+  --md-sys-typescale-label-large: 500 14px/20px var(--md-sys-font);
+  --md-sys-typescale-label-medium: 500 12px/16px var(--md-sys-font);
+  --md-sys-typescale-label-small: 500 11px/16px var(--md-sys-font);
+
+  --md-sys-font: Roboto, "Roboto Flex", system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  --md-sys-font-mono: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  font: var(--md-sys-typescale-body-medium);
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+/*#region 字阶工具类 */
+.md-headline-small { font: var(--md-sys-typescale-headline-small); }
+.md-title-large { font: var(--md-sys-typescale-title-large); }
+.md-title-medium { font: var(--md-sys-typescale-title-medium); }
+.md-title-small { font: var(--md-sys-typescale-title-small); }
+.md-body-large { font: var(--md-sys-typescale-body-large); }
+.md-body-medium { font: var(--md-sys-typescale-body-medium); }
+.md-body-small { font: var(--md-sys-typescale-body-small); }
+.md-label-large { font: var(--md-sys-typescale-label-large); }
+.md-label-medium { font: var(--md-sys-typescale-label-medium); }
+.md-label-small { font: var(--md-sys-typescale-label-small); }
+.md-muted { color: var(--md-sys-color-on-surface-variant); }
+/*#endregion*/
+
+/*#region 图标 */
+.md-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  fill: currentColor;
+  display: block;
+}
+.md-icon--18 { width: 18px; height: 18px; }
+.md-icon--20 { width: 20px; height: 20px; }
+/*#endregion*/
+
+/*#region 顶栏 top app bar */
+.md-top-app-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px 8px;
+}
+.md-top-app-bar__text { min-width: 0; }
+.md-top-app-bar__title {
+  font: var(--md-sys-typescale-title-large);
+  color: var(--md-sys-color-on-surface);
+  margin: 0;
+}
+.md-top-app-bar__subtitle {
+  font: var(--md-sys-typescale-body-small);
+  color: var(--md-sys-color-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.md-top-app-bar__leading {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--md-sys-shape-full);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+/*#endregion*/
+
+/*#region 卡片 card */
+.md-card {
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-on-surface);
+  border-radius: var(--md-sys-shape-md);
+  padding: 16px;
+}
+.md-card--outlined {
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+.md-card--elevated {
+  background: var(--md-sys-color-surface-container-low);
+  box-shadow: var(--md-sys-elevation-1);
+}
+.md-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.md-card__title {
+  font: var(--md-sys-typescale-title-small);
+  color: var(--md-sys-color-on-surface);
+}
+.md-card__body { display: grid; gap: 12px; }
+/*#endregion*/
+
+/*#region 按钮 button */
+.md-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 20px;
+  border: none;
+  border-radius: var(--md-sys-shape-full);
+  cursor: pointer;
+  font: var(--md-sys-typescale-label-large);
+  letter-spacing: 0.1px;
+  overflow: hidden;
+  isolation: isolate;
+  transition: box-shadow var(--md-sys-motion-duration-short) var(--md-sys-motion-standard),
+    background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-standard);
+  text-decoration: none;
+}
+.md-button:disabled {
+  cursor: default;
+  opacity: 0.38;
+}
+/* 状态层：MD3 用叠加层表达 hover/focus/pressed，另外还有聚焦指示环 */
+.md-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--md-sys-motion-duration-short) var(--md-sys-motion-standard);
+  pointer-events: none;
+}
+.md-button:hover:not(:disabled)::before { opacity: var(--md-sys-state-hover); }
+.md-button:focus-visible {
+  outline: 3px solid var(--md-sys-color-secondary);
+  outline-offset: 2px;
+}
+.md-button:focus-visible::before { opacity: var(--md-sys-state-focus); }
+.md-button:active:not(:disabled)::before { opacity: var(--md-sys-state-pressed); }
+
+.md-button--filled {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+.md-button--filled:hover:not(:disabled) { box-shadow: var(--md-sys-elevation-1); }
+.md-button--tonal {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+.md-button--outlined {
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  border: 1px solid var(--md-sys-color-outline);
+}
+.md-button--text {
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  padding: 0 12px;
+}
+.md-button--icon {
+  min-height: 40px;
+  width: 40px;
+  padding: 0;
+  border-radius: var(--md-sys-shape-full);
+  background: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.md-button--error {
+  background: var(--md-sys-color-error);
+  color: var(--md-sys-color-on-error);
+}
+
+/* 水波纹 */
+.md-ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  background: currentColor;
+  opacity: 0.24;
+  pointer-events: none;
+  animation: md-ripple 600ms var(--md-sys-motion-emphasized-decelerate) forwards;
+}
+@keyframes md-ripple {
+  to { transform: scale(1); opacity: 0; }
+}
+/*#endregion*/
+
+/*#region 开关 switch（MD3） */
+/*
+ * 几何只定义在一处：滑块（::before）与勾选标记（::after）都读同一组
+ * --md-switch-thumb-* 变量，所以两者不可能再错开。
+ * 之前它们各自定位（滑块居中/靠右，勾固定在 50% 再加 translateX），
+ * 结果选中后勾没跟着滑块走，看起来就是"错位"。
+ *
+ * 尺寸按 MD3：轨道 52×32，未选中滑块 16dp（左内缩 8dp），选中滑块 24dp（右内缩 4dp）；
+ * 这里的 left 值以边框内侧为基准，所以要减掉 2px 边框。
+ */
+.md-switch {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+  cursor: pointer;
+}
+.md-switch input {
+  appearance: none;
+  margin: 0;
+  flex: 0 0 auto;
+  position: relative;
+  width: 52px;
+  height: 32px;
+  border-radius: var(--md-sys-shape-full);
+  border: 2px solid var(--md-sys-color-outline);
+  background: var(--md-sys-color-surface-container-highest);
+  cursor: pointer;
+  --md-switch-thumb-size: 16px;
+  --md-switch-thumb-left: 6px;
+  transition: background-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-standard),
+    border-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-standard);
+}
+.md-switch input:checked {
+  background: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+  --md-switch-thumb-size: 24px;
+  --md-switch-thumb-left: calc(100% - var(--md-switch-thumb-size) - 2px);
+}
+/* 滑块 */
+.md-switch input::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--md-switch-thumb-left);
+  width: var(--md-switch-thumb-size);
+  height: var(--md-switch-thumb-size);
+  border-radius: var(--md-sys-shape-full);
+  background: var(--md-sys-color-outline);
+  transform: translateY(-50%);
+  transition: left var(--md-sys-motion-duration-medium) var(--md-sys-motion-emphasized),
+    width var(--md-sys-motion-duration-medium) var(--md-sys-motion-emphasized),
+    height var(--md-sys-motion-duration-medium) var(--md-sys-motion-emphasized),
+    background-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-standard),
+    box-shadow var(--md-sys-motion-duration-medium) var(--md-sys-motion-standard);
+}
+/* 勾选标记：与滑块共用同一组变量，天然居中在滑块上 */
+.md-switch input::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--md-switch-thumb-left);
+  width: var(--md-switch-thumb-size);
+  height: var(--md-switch-thumb-size);
+  transform: translateY(-50%) scale(0.5);
+  opacity: 0;
+  pointer-events: none;
+  /* 滑块选中后是 on-primary（浅色），勾用 primary（深色）才能形成对比，深色主题下自动反过来 */
+  background: var(--md-sys-color-primary);
+  transition: transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-emphasized),
+    opacity var(--md-sys-motion-duration-short) var(--md-sys-motion-standard);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+  -webkit-mask-position: center;
+  -webkit-mask-size: 16px 16px;
+  -webkit-mask-repeat: no-repeat;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+  mask-position: center;
+  mask-size: 16px 16px;
+  mask-repeat: no-repeat;
+}
+.md-switch input:checked::before { background: var(--md-sys-color-on-primary); }
+.md-switch input:checked::after {
+  transform: translateY(-50%) scale(1);
+  opacity: 1;
+}
+/* MD3 的悬停光晕：8dp，比按压反馈更克制 */
+.md-switch input:hover::before,
+.md-switch input:focus-visible::before {
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent);
+}
+.md-switch input:focus-visible {
+  outline: 3px solid var(--md-sys-color-secondary);
+  outline-offset: 3px;
+}
+/* 文字与 32dp 轨道居中对齐：首行行高 24dp，(32-24)/2 = 4dp */
+.md-switch__text { display: grid; gap: 2px; padding-top: 4px; }
+.md-switch__label { font: var(--md-sys-typescale-body-large); color: var(--md-sys-color-on-surface); }
+.md-switch__supporting { font: var(--md-sys-typescale-body-small); color: var(--md-sys-color-on-surface-variant); }
+/*#endregion*/
+
+/*#region 文本输入框 text field（outlined，带浮动标签） */
+.md-field {
+  position: relative;
+  display: block;
+}
+.md-field__input {
+  width: 100%;
+  font: var(--md-sys-typescale-body-large);
+  color: var(--md-sys-color-on-surface);
+  background: transparent;
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--md-sys-shape-xs);
+  padding: 14px 15px;
+  outline: none;
+  transition: border-color var(--md-sys-motion-duration-short) var(--md-sys-motion-standard),
+    border-width var(--md-sys-motion-duration-short) var(--md-sys-motion-standard);
+}
+textarea.md-field__input {
+  min-height: 72px;
+  resize: vertical;
+  font: var(--md-sys-typescale-body-medium);
+  font-family: var(--md-sys-font-mono);
+  line-height: 1.5;
+}
+.md-field__input:hover { border-color: var(--md-sys-color-on-surface); }
+.md-field__input:focus {
+  border: 2px solid var(--md-sys-color-primary);
+  padding: 13px 14px;
+}
+.md-field__label {
+  position: absolute;
+  left: 12px;
+  top: 15px;
+  padding: 0 4px;
+  font: var(--md-sys-typescale-body-large);
+  color: var(--md-sys-color-on-surface-variant);
+  pointer-events: none;
+  background: var(--md-sys-color-surface);
+  transition: all var(--md-sys-motion-duration-short) var(--md-sys-motion-standard);
+}
+.md-field__input:focus + .md-field__label,
+.md-field__input:not(:placeholder-shown) + .md-field__label {
+  top: -8px;
+  font: var(--md-sys-typescale-body-small);
+  color: var(--md-sys-color-primary);
+}
+.md-field__supporting {
+  display: block;
+  margin: 4px 16px 0;
+  font: var(--md-sys-typescale-body-small);
+  color: var(--md-sys-color-on-surface-variant);
+}
+/*#endregion*/
+
+/*#region 分段按钮 segmented button */
+.md-segmented {
+  display: inline-flex;
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--md-sys-shape-full);
+  overflow: hidden;
+}
+.md-segmented label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font: var(--md-sys-typescale-label-large);
+  color: var(--md-sys-color-on-surface);
+  transition: background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-standard);
+}
+.md-segmented label + label { border-left: 1px solid var(--md-sys-color-outline); }
+.md-segmented input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.md-segmented label:hover { background: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent); }
+.md-segmented input:checked + span { color: var(--md-sys-color-on-secondary-container); }
+.md-segmented label:has(input:checked) {
+  background: var(--md-sys-color-secondary-container);
+}
+.md-segmented label:has(input:focus-visible) {
+  outline: 3px solid var(--md-sys-color-secondary);
+  outline-offset: -3px;
+}
+/*#endregion*/
+
+/*#region 列表 list */
+.md-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+.md-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--md-sys-shape-sm);
+  transition: background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-standard);
+}
+.md-list-item--interactive { cursor: pointer; }
+.md-list-item--interactive:hover { background: color-mix(in srgb, var(--md-sys-color-on-surface) 8%, transparent); }
+.md-list-item__text { min-width: 0; flex: 1; }
+.md-list-item__headline {
+  font: var(--md-sys-typescale-body-medium);
+  color: var(--md-sys-color-on-surface);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.md-list-item__supporting {
+  font: var(--md-sys-typescale-body-small);
+  color: var(--md-sys-color-on-surface-variant);
+}
+/*#endregion*/
+
+/*#region 状态胶囊 chip（会话状态用） */
+.md-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--md-sys-shape-sm);
+  font: var(--md-sys-typescale-label-medium);
+  white-space: nowrap;
+}
+.md-chip__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--md-sys-shape-full);
+  background: currentColor;
+  flex: 0 0 auto;
+}
+.md-chip--running {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+.md-chip--running .md-chip__dot { animation: md-pulse 1.4s var(--md-sys-motion-standard) infinite; }
+.md-chip--done {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+.md-chip--idle {
+  background: var(--md-sys-color-surface-container-highest);
+  color: var(--md-sys-color-on-surface-variant);
+}
+.md-chip--warning {
+  background: var(--md-sys-color-tertiary-container);
+  color: var(--md-sys-color-on-tertiary-container);
+}
+.md-chip--error {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+}
+@keyframes md-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.8); }
+}
+/*#endregion*/
+
+/*#region 其它基元 */
+.md-divider {
+  height: 1px;
+  background: var(--md-sys-color-outline-variant);
+  border: 0;
+  margin: 12px 0;
+}
+.md-snackbar {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translate(-50%, 200%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100% - 32px);
+  padding: 12px 16px;
+  border-radius: var(--md-sys-shape-xs);
+  background: var(--md-sys-color-inverse-surface);
+  color: var(--md-sys-color-inverse-on-surface);
+  font: var(--md-sys-typescale-body-medium);
+  box-shadow: var(--md-sys-elevation-3);
+  transition: transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-emphasized);
+  z-index: 50;
+}
+.md-snackbar[data-open="true"] { transform: translate(-50%, 0); }
+.md-linear-progress {
+  height: 4px;
+  border-radius: var(--md-sys-shape-full);
+  overflow: hidden;
+  background: var(--md-sys-color-surface-container-highest);
+}
+.md-linear-progress__bar {
+  height: 100%;
+  width: 40%;
+  background: var(--md-sys-color-primary);
+  animation: md-indeterminate 1.6s var(--md-sys-motion-emphasized) infinite;
+}
+@keyframes md-indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+.md-pre {
+  margin: 0;
+  padding: 12px;
+  border-radius: var(--md-sys-shape-sm);
+  background: var(--md-sys-color-surface-container-highest);
+  color: var(--md-sys-color-on-surface-variant);
+  font: var(--md-sys-typescale-body-small);
+  font-family: var(--md-sys-font-mono);
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.md-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+/*#endregion*/
+
+/*#region 滚动条 */
+/*
+ * 弹窗很小，系统滚动条（Windows 下约 15px、带箭头槽）非常抢眼。
+ * 这里的做法是"静止不可见、悬停出现 6px 细条"：
+ * 完全隐藏会让"内容还能滚"失去唯一提示，所以先收起视觉噪音、保留可发现性。
+ *
+ * 注意一个坑：标准属性 scrollbar-width / scrollbar-color 一旦非 auto，
+ * Chrome（121+）就会**忽略** ::-webkit-scrollbar 伪元素，细条会从 6px 变成 ~11px 的 "thin"。
+ * 所以两套写法分流：支持 webkit 伪元素的浏览器走精确的 6px 方案，
+ * 不支持的那些（Firefox）才退回标准属性。
+ *
+ * 想彻底隐藏（悬停也不出现），给同一个容器再加一个 md-scroll--none 类即可。
+ */
+.md-scroll {
+  overflow: auto;
+  /* 无论当前是否可滚动都预留槽位，避免列表变长时内容左右跳一下 */
+  scrollbar-gutter: stable;
+}
+.md-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.md-scroll::-webkit-scrollbar-track,
+.md-scroll::-webkit-scrollbar-corner {
+  background: transparent;
+}
+.md-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: var(--md-sys-shape-full);
+}
+.md-scroll:hover::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 28%, transparent);
+}
+.md-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 45%, transparent);
+}
+
+/* 彻底隐藏：可滚但没有任何滚动条 */
+.md-scroll--none,
+.md-scroll--none:hover {
+  scrollbar-width: none;
+}
+.md-scroll--none::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* 文档级滚动条（弹窗整体）：同样静止不可见、悬停出现 */
+.md-scroll-root::-webkit-scrollbar {
+  width: 8px;
+}
+.md-scroll-root::-webkit-scrollbar-track,
+.md-scroll-root::-webkit-scrollbar-corner {
+  background: transparent;
+}
+.md-scroll-root::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: var(--md-sys-shape-full);
+}
+.md-scroll-root:hover::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--md-sys-color-on-surface) 25%, transparent);
+}
+
+/*
+ * 不支持 ::-webkit-scrollbar 的浏览器（Firefox）退回标准属性。
+ * 放在 @supports not 里，是为了避免在 Chrome 上把上面的精确细条方案顶掉。
+ */
+@supports not selector(::-webkit-scrollbar) {
+  .md-scroll,
+  .md-scroll-root {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  .md-scroll:hover,
+  .md-scroll-root:hover {
+    scrollbar-color: color-mix(in srgb, var(--md-sys-color-on-surface) 32%, transparent) transparent;
+  }
+}
+/*#endregion*/
+
+/* 尊重系统的"减少动效"设置 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}

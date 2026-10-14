@@ -1,0 +1,12 @@
+{
+  "name": "dsh-notifier",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "dsh 任务状态通知的 Chrome MV3 扩展：监听 dsh Web GUI 的会话状态并发出系统通知。",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "theme": "node tools/gen-theme-css.mjs",
+    "icons": "python3 tools/make-icons.py"
+  }
+}
